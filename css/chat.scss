@@ -1,0 +1,75 @@
+html{
+        height: 100vh;
+}
+.fade-enter-active, .fade-leave-active {
+        transition: opacity 1s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+        opacity: 0;
+}
+.expand-transition-leave-active{
+        padding:0px;
+}
+.intro-btn{
+        button{
+                width: 300px !important;
+                height:150px !important;
+                font-size:30px !important;
+        }
+        .right-btn{
+                margin-left:10px !important;
+                margin-right:10px !important;
+        }
+}
+.chat-area{
+        height: 100%;
+}
+.input-area{
+}
+.input-btn{
+        margin-top: -5px;
+}
+.v-text-field__details{
+        display: none !important;
+}
+.v-sheet{
+        border-radius: 10px !important;
+}
+.v-expansion-panels{
+        border-radius: 10px !important;
+}
+.v-expansion-panel-content__wrap {
+        padding: 0 8px 16px !important;
+}
+.chat-layout .content{
+        padding-right:5px !important;
+}
+.chat-layout{
+        flex-wrap: nowrap !important;
+        .chat-avatar{
+                flex-grow:0 !important;
+        }
+        .chat-box{
+                flex-grow:0 !important;
+                margin-left:10px;
+                margin-right:10px;
+                max-width: 70vw;
+                .v-card{
+                        margin-top:-5px;
+                        padding:10px;
+                }
+        }
+        .chat-panels{
+                flex-grow:0 !important;
+                margin-left:10px;
+                margin-right:10px;
+                max-width: 70vw;
+                .chat-panel{
+                        margin-top:-5px;
+                        padding:10px;
+                }
+        }
+        .content{
+                padding: 16px 30px;
+        }
+}

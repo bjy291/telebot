@@ -29,13 +29,6 @@
     app.listen(3030,()=>{ 
             console.log('Conneted 3030 port');
     });
-
-    var mod = require('korean-text-analytics');
-    var task = new mod.TaskQueue();
-
-    mod.ExecuteMorphModule('아버지가 방에 들어가신다', function(err, rep){
-            console.log(err, rep);
-    })
 }
 Date.prototype.format = function(f) { //날짜형식 함수
     if (!this.valueOf()) return " ";
