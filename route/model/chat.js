@@ -3,7 +3,6 @@ var promise=require('promise')
 //const OpenKoreanText = require('open-korean-text-node').default;
     var mod = require('korean-text-analytics');
     var task = new mod.TaskQueue();
-var resultData=[]
 exports.main=(req,res)=>{
         res.render('main')
 }
@@ -15,20 +14,21 @@ exports.chat=async (req,res)=>{
         flag=req.body.flag
         data=await extraction(userText)
         console.log("data : ",data)
-        // sql=await setSql(data)
-        // result=await getContent(sql,flag).then((result)=>{
-        //         return result
-        // }).catch((err)=>{
-        //         return null
-        // })
-        // if(result){
-        //         res.send({data:result,dataNone:false})
+        sql=await setSql(data)
+        console.log(sql)
+        result=await getContent(sql,flag).then((result)=>{
+                return result
+        }).catch((err)=>{
+                return null
+        })
+        if(result){
+                res.send({data:result,dataNone:false})
         //         sumD=sumData(data)
         //         inQuiry(userText,sumD)
         //         data.map(counter)
-        // }else{
-        //         res.send({dataNone:true})
-        // }
+        }else{
+                res.send({dataNone:true})
+        }
 }
 function counter(data){
         sql="select idx,count(*) as cnt from log_counter where keyword = ?"
@@ -105,11 +105,11 @@ function inQuiry(userText,sumD){
 // }
 async function setSql(data){
         if(data){
-                sql="select idx, group_title, Data_idx from Number_dictionary where ("
+                sql="select numberData.* from Number_dictionary join numberData using(Data_idx) where ("
                 data.map( (token,index) => {
                         console.log(token)
-                        if(index == 0) sql += "chapter_title like '%"+token+"%' or group_title like '%"+token+"%' "
-                        else sql +="or chapter_title like '%"+token+"%' or group_title like '%"+token+"%' "
+                        if(index == 0) sql += "chapter_title like '%"+token+"%' "
+                        else sql +="or chapter_title like '%"+token+"%'  "
                 })
                 sql+=")"
                 return sql
@@ -123,7 +123,7 @@ async function getContent(sql,flag){
                         db.query(sql,flag,(err,result)=>{
                                 if(err) reject(err)
                                 else{
-                                        // console.log(result)
+                                        console.log("sql : ", result[0])
                                         resolve(result)
                                 }
                         })
@@ -143,33 +143,52 @@ async function getContent(sql,flag){
 //         return result
 // }
 async function extraction(userText){
-        mod.ExecuteMorphModule(userText, function(err, rep){
-                data=rep
-                console.log("extr1 : ",JSON.stringify(data['morphed'][0]['word']))
-
-                for(text of data['morphed']){
-                        if(text['word'].length>1){
-                                resultData.push(text['word'])
+        return new promise( (resolve, reject) => {
+                resultData=[]
+                mod.ExecuteMorphModule(userText, function(err, rep){
+                        if(err) reject(err)
+                        data = rep
+                        for(text of data['morphed']){
+                                if(text['word'].length>1){
+                                        resultData.push(text['word'])
+                                }
                         }
-                }
-               
-                console.log("reet:",resultData)
-                return resultData   
+                        resolve(resultData)
+                })
         })
+        // mod.ExecuteMorphModule(userText, function(err, rep){
+        //         data=rep
+        //         console.log("extr1 : ",JSON.stringify(data['morphed'][0]['word']))
+
+        //         for(text of data['morphed']){
+        //                 if(text['word'].length>1){
+        //                         resultData.push(text['word'])
+        //                 }
+        //         }
+               
+        //         console.log("reet:",resultData)
+        //         return resultData   
+        // })
+
         // mod.ExecuteMorphModule('테스트', function(err, rep){
         //         console.log(err, rep);
         // })
-        return resultData
+        //return resultData
+}
+function parse(str){
+        return new promise( (resolve, reject) => {
+                mod.ExecuteMorphModule(str, function(err, rep){
+                        if(err) reject(err)
+                        resolve(rep)
+                })
+        })
 }
 async function initialize(){
         // OpenKoreanText.normalizeSync('테스트')
         // OpenKoreanText.tokenizeSync('테스트').toJSON()
-        data2 = []
-        mod.ExecuteMorphModule('테스트', (err, rep) => {
-                data2 = rep
-                console.log(data2)
-        }, {});
-        console.log(data2)
+        let str = "테스트"
+        let parseData = await parse(str)
+        console.log(parseData)
         // task.addSteamTask('동해물과 백두산이 마르고 닳도록', {Comment : '추가정보'})
         // task.addSteamTask('하나님이 보우하사 우리나라만세', {Comment : '추가정보'})
         // task.exec(function(err, rep){
