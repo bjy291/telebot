@@ -13,14 +13,18 @@ exports.chat=async (req,res)=>{
         }
         flag=req.body.flag
         data=await extraction(userText)
-        console.log("data : ",data)
-        sql=await setSql(data)
-        console.log(sql)
-        result=await getContent(sql,flag).then((result)=>{
-                return result
-        }).catch((err)=>{
-                return null
-        })
+        console.log("data : ", data)
+        if(data.indexOf("FAX") < 0){
+                sql=await setSql(data)
+                result=await getContent(sql,flag).then((result)=>{
+                        return result
+                }).catch((err)=>{
+                        return null
+                })       
+        }else if(data.indexOf("FAX") >= 0){
+                result=await setFAXSql(data)
+        }
+
         if(result){
                 res.send({data:result,dataNone:false})
         //         sumD=sumData(data)
@@ -105,7 +109,8 @@ function inQuiry(userText,sumD){
 // }
 async function setSql(data){
         if(data){
-                sql="select numberData.* from Number_dictionary join numberData using(Data_idx) where ("
+                sql="select numberData.* from telebot.number_dictionary join telebot.numberData using(Data_idx) where ("
+                //sql="select * from number_dictionary where ("
                 data.map( (token,index) => {
                         console.log(token)
                         if(index == 0) sql += "chapter_title like '%"+token+"%' "
@@ -113,6 +118,33 @@ async function setSql(data){
                 })
                 sql+=")"
                 return sql
+        }else{
+                return null
+        }
+}
+async function setFAXSql(data){
+        if(data){
+                FAXsql = "select a.* from telebot.numberData a join (select Data_idx from telebot.number_dictionary where (group_title like '%FAX%')) fax using (Data_idx) where ("
+                data.map((token, index) => {
+                        if(index==0) FAXsql += "num_group like '%" + token+ "%'"
+                        else FAXsql += "or num_group like '%" + token+ "%' "
+                })
+                FAXsql += ")"
+
+                result=await getContent(FAXsql,flag).then((result)=>{
+                        return result
+                }).catch((err)=>{
+                        return null
+                })
+
+                if(result == null){
+                        console.log("null")
+                        return "FAX"
+                }else{
+                        console.log("널아님")
+                        return result
+                }
+
         }else{
                 return null
         }
@@ -148,9 +180,29 @@ async function extraction(userText){
                 mod.ExecuteMorphModule(userText, function(err, rep){
                         if(err) reject(err)
                         data = rep
-                        for(text of data['morphed']){
-                                if(text['word'].length>1){
-                                        resultData.push(text['word'])
+                        // for(text of data['morphed']){
+                        //         if(text['word'].length>1){
+                        //                 resultData.push(text['word'])
+                        //         }
+                        // }
+                        for(var i=0; i<data['morphed'].length; i=i+1){
+                                switch(data['morphed'][i]['word']){
+                                        case '교무':
+                                                data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
+                                                data['morphed'][i+1]['word'] = ''
+                                                break
+                                        case 'IT':
+                                                data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
+                                                data['morphed'][i+1]['word'] = ''
+                                                break
+                                        case 'FAX':
+                                                //data['morphed'][i]['word'] = ''
+                                                //FAXsql=await setFAXSql(data['morphed'])
+                                                break
+                                }
+
+                                if(data['morphed'][i]['word'].length>1){
+                                        resultData.push(data['morphed'][i]['word'])
                                 }
                         }
                         resolve(resultData)
