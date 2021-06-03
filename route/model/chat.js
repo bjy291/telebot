@@ -14,17 +14,24 @@ exports.chat=async (req,res)=>{
         flag=req.body.flag
         data=await extraction(userText)
         console.log("data : ", data)
-        if(data.indexOf("FAX") < 0){
+
+        if(data.indexOf("FAX") >= 0){
+                result=await setFAXSql(data, "FAX")
+        }else if(data.indexOf("팩스") >= 0){
+                result=await setFAXSql(data, "FAX")
+        }else if(data.indexOf("fax") >= 0){
+                result=await setFAXSql(data, "FAX")
+        }else if(data.indexOf("민원안내") >= 0){
+                result=await setFAXSql(data, "민원안내")
+        }else{
                 sql=await setSql(data)
                 result=await getContent(sql,flag).then((result)=>{
                         return result
                 }).catch((err)=>{
                         return null
                 })       
-        }else if(data.indexOf("FAX") >= 0){
-                result=await setFAXSql(data)
         }
-
+        console.log("RETURN : ", result)
         if(result){
                 res.send({data:result,dataNone:false})
         //         sumD=sumData(data)
@@ -122,9 +129,10 @@ async function setSql(data){
                 return null
         }
 }
-async function setFAXSql(data){
+async function setFAXSql(data ,str){
         if(data){
-                FAXsql = "select a.* from telebot.numberData a join (select Data_idx from telebot.number_dictionary where (group_title like '%FAX%')) fax using (Data_idx) where ("
+                FAXsql = "select a.* from telebot.numberData a join (select Data_idx from telebot.number_dictionary where (group_title like '%"
+                FAXsql += str + "%')) fax using (Data_idx) where ("
                 data.map((token, index) => {
                         if(index==0) FAXsql += "num_group like '%" + token+ "%'"
                         else FAXsql += "or num_group like '%" + token+ "%' "
@@ -136,12 +144,10 @@ async function setFAXSql(data){
                 }).catch((err)=>{
                         return null
                 })
-
-                if(result == null){
-                        console.log("null")
-                        return "FAX"
+                console.log(result)
+                if(result == ''){
+                        return str
                 }else{
-                        console.log("널아님")
                         return result
                 }
 
@@ -195,10 +201,18 @@ async function extraction(userText){
                                                 data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
                                                 data['morphed'][i+1]['word'] = ''
                                                 break
-                                        case 'FAX':
-                                                //data['morphed'][i]['word'] = ''
-                                                //FAXsql=await setFAXSql(data['morphed'])
+                                        case '민원':
+                                                data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
+                                                data['morphed'][i+1]['word'] = ''
                                                 break
+                                        case '학생':
+                                                data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
+                                                data['morphed'][i+1]['word'] = ''
+                                                break
+                                        // case '지원':
+                                        //         data['morphed'][i-1]['word'] = data['morphed'][i-1]['word'] + data['morphed'][i]['word']
+                                        //         data['morphed'][i]['word'] = ''
+                                        //         break
                                 }
 
                                 if(data['morphed'][i]['word'].length>1){

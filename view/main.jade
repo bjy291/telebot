@@ -23,8 +23,8 @@ html
                         //-                                 v-btn(v-on:click="show = !show;flag=2" color='info' large) 대학생활
                         //- transition(name="fade")
                         v-app
-                                v-app-bar(dense clipped-left)
-                                        v-app-bar-nav-icon
+                                v-app-bar(dense clipped-left)(style="background-color:#fec995!important;")
+                                        v-app-bar-nav-icon(style="background-color:#fec995!important;")
                                         v-toolbar-title 인하공업전문대학
                                 v-container.chat-area(blue lighten-2)
                                         v-container(v-for="chat in chatlist" grid-list-lg fluid)
@@ -32,14 +32,15 @@ html
                                                         v-flex.chat-avatar
                                                                 v-avatar(color="indigo" size="36")
                                                                         img(src="./img/logo.jpg" alt="avatar")
-                                                        v-flex.chat-box(v-if="chat.panel===false")
-                                                                v-card
-                                                                        span {{chat.text}}
-                                                        v-expansion-panels.chat-panels(v-if="chat.panel===true")
-                                                                v-expansion-panel.chat-panel(v-for="bot in chat.botlist")
-                                                                        v-expansion-panel.chat-panel(v-if="bot.location != ''")
-                                                                                v-expansion-panel-header {{bot.group_title}}({{bot.location}}) {{bot.position}} {{bot.name}}님 - {{bot.job}}
-                                                                                v-expansion-panel-content.content(v-html="bot.content") aa
+                                                                span.chat-name 텔레봇
+                                                                v-flex.chat-box(v-if="chat.panel===false")
+                                                                        v-card
+                                                                                span {{chat.text}}
+                                                                v-expansion-panels.chat-panels(v-if="chat.panel===true")
+                                                                        v-expansion-panel.chat-panel(v-for="bot in chat.botlist")
+                                                                                //v-expansion-panel.chat-panel(v-if="bot.location != ''")
+                                                                                v-expansion-panel-header {{bot.group_title}}{{bot.location}} {{bot.position}} {{bot.name}} {{bot.job}}
+                                                                                v-expansion-panel-content.content(v-html="bot.content")
 
                                                 v-layout.chat-layout(v-if="chat.flag===2" align-start justify-end row fill-height)
                                                         v-flex.chat-box
@@ -65,7 +66,7 @@ html
                         }),
                         data:{
                                 show:false,
-                                chatlist:[{flag:1,text:"안녕하세요. 신입생여러분! 아라봇입니다. 무엇이 궁금하세요?",panel:false}],
+                                chatlist:[{flag:1,text:"안녕하세요. 인하공전 텔레봇입니다. 교직원, 부서의 전화번호를 알려드립니다.",panel:false}],
                                 userText:"",
                                 flag:"",
                         },
@@ -97,6 +98,26 @@ html
                                                                 this.chatlist.push(extract)
                                                                 return
                                                         }
+                                                        if(data == "FAX"){
+                                                                extract={
+                                                                        flag:1,
+                                                                        panel:false,
+                                                                        text:'정확한 부서명과 단어 "FAX(팩스)"를 입력해주세요.' + " 예) OO팀 FAX"
+
+                                                                }
+                                                                this.chatlist.push(extract)
+                                                                return
+                                                        }
+                                                        if(data == "민원안내"){
+                                                                extract={
+                                                                        flag:1,
+                                                                        panel:false,
+                                                                        text:'정확한 부서명과 단어 "민원안내"를 입력해주세요.' + " 예) OO부서 민원안내"
+
+                                                                }
+                                                                this.chatlist.push(extract)
+                                                                return
+                                                        }
                                                         panellist=[]
                                                         //- for(key in data){
                                                         //-         //- list={indexNo:data[key].indexNo,
@@ -106,14 +127,23 @@ html
                                                         //-         panellist.push(list)
                                                         //- }
                                                         for(var i=0;i<dataLen;i=i+1){
+                                                                var loc = ""
+                                                                var job = ""
+                                                                if(data[i].num_location != ""){
+                                                                        loc = "("+data[i].num_location+")"
+                                                                }
+                                                                if(data[i].num_job != ""){
+                                                                        job = " - " + data[i].num_job
+                                                                }        
+
                                                                 list={
                                                                         indexNo:data[i].Data_idx,
                                                                         group_title:data[i].num_group,
                                                                         name:data[i].num_name,
-                                                                        job:data[i].num_job,
-                                                                        location:data[i].num_location,
+                                                                        job:job,
+                                                                        location:loc,
                                                                         position:data[i].num_position,
-                                                                        content:data[i].num_number,
+                                                                        content:  "☎ 032 - 870 - " + data[i].num_number,
                                                                         sub_content:data[i].num_sub_num
                                                                 }
                                                                 panellist.push(list)
