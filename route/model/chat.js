@@ -12,6 +12,7 @@ exports.chat=async (req,res)=>{
                 res.send({dataNone:true})
         }
         flag=req.body.flag
+        data2 = userText.split(" ")
         data=await extraction(userText)
         console.log("data : ", data)
 
@@ -24,13 +25,24 @@ exports.chat=async (req,res)=>{
         }else if(data.indexOf("민원안내") >= 0){
                 result=await setFAXSql(data, "민원안내")
         }else{
-                sql=await setSql(data)
+                sql=await setSql(data2)
                 result=await getContent(sql,flag).then((result)=>{
                         return result
                 }).catch((err)=>{
                         return null
                 })       
+        }       
+        
+        if(result == ""){
+                console.log("IF null 동작")
+                sql=await setSql(data)
+                result=await getContent(sql,flag).then((result)=>{
+                        return result
+                }).catch((err)=>{
+                        return null
+                }) 
         }
+
         console.log("RETURN : ", result)
         if(result){
                 res.send({data:result,dataNone:false})
@@ -161,7 +173,6 @@ async function getContent(sql,flag){
                         db.query(sql,flag,(err,result)=>{
                                 if(err) reject(err)
                                 else{
-                                        console.log("sql : ", result[0])
                                         resolve(result)
                                 }
                         })
@@ -192,28 +203,28 @@ async function extraction(userText){
                         //         }
                         // }
                         for(var i=0; i<data['morphed'].length; i=i+1){
-                                switch(data['morphed'][i]['word']){
-                                        case '교무':
-                                                data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
-                                                data['morphed'][i+1]['word'] = ''
-                                                break
-                                        case 'IT':
-                                                data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
-                                                data['morphed'][i+1]['word'] = ''
-                                                break
-                                        case '민원':
-                                                data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
-                                                data['morphed'][i+1]['word'] = ''
-                                                break
-                                        case '학생':
-                                                data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
-                                                data['morphed'][i+1]['word'] = ''
-                                                break
-                                        // case '지원':
-                                        //         data['morphed'][i-1]['word'] = data['morphed'][i-1]['word'] + data['morphed'][i]['word']
-                                        //         data['morphed'][i]['word'] = ''
-                                        //         break
-                                }
+                                // switch(data['morphed'][i]['word']){
+                                //         case '교무':
+                                //                 data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
+                                //                 data['morphed'][i+1]['word'] = ''
+                                //                 break
+                                //         case 'IT':
+                                //                 data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
+                                //                 data['morphed'][i+1]['word'] = ''
+                                //                 break
+                                //         case '민원':
+                                //                 data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
+                                //                 data['morphed'][i+1]['word'] = ''
+                                //                 break
+                                //         case '학생':
+                                //                 data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
+                                //                 data['morphed'][i+1]['word'] = ''
+                                //                 break
+                                //         // case '지원':
+                                //         //         data['morphed'][i-1]['word'] = data['morphed'][i-1]['word'] + data['morphed'][i]['word']
+                                //         //         data['morphed'][i]['word'] = ''
+                                //         //         break
+                                // }
 
                                 if(data['morphed'][i]['word'].length>1){
                                         resultData.push(data['morphed'][i]['word'])

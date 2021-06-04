@@ -75,3 +75,14 @@ html {
 
 .chat-layout .content {
   padding: 16px 30px; }
+
+  .chat-layout .content a{
+    background-color: #F8A04B;
+    color: white;
+    padding: 2px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-left: 10px; }
+
+

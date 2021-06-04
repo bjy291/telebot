@@ -42,6 +42,8 @@ html
                                                                                 v-expansion-panel-header {{bot.group_title}}{{bot.location}} {{bot.position}} {{bot.name}} {{bot.job}}
                                                                                 v-expansion-panel-content.content(v-html="bot.content")
 
+                                                                                        
+
                                                 v-layout.chat-layout(v-if="chat.flag===2" align-start justify-end row fill-height)
                                                         v-flex.chat-box
                                                                 v-card(color="amber lighten-2")
@@ -129,12 +131,18 @@ html
                                                         for(var i=0;i<dataLen;i=i+1){
                                                                 var loc = ""
                                                                 var job = ""
+                                                                var content = ""
                                                                 if(data[i].num_location != ""){
                                                                         loc = "("+data[i].num_location+")"
                                                                 }
                                                                 if(data[i].num_job != ""){
                                                                         job = " - " + data[i].num_job
-                                                                }        
+                                                                }
+                                                                if(data[i].num_number.length > 5){
+                                                                        content = "☎ 032-" + data[i].num_number + " <a class='calling' href='tel:010-5896-2240'> 전화걸기</a>"
+                                                                }else if(data[i].num_number.length <= 4){
+                                                                        content = "☎ 032-870-" + data[i].num_number + " <a class='calling' href='tel:010-5896-2240'> 전화걸기</a>"
+                                                                }
 
                                                                 list={
                                                                         indexNo:data[i].Data_idx,
@@ -143,7 +151,7 @@ html
                                                                         job:job,
                                                                         location:loc,
                                                                         position:data[i].num_position,
-                                                                        content:  "☎ 032 - 870 - " + data[i].num_number,
+                                                                        content:content,
                                                                         sub_content:data[i].num_sub_num
                                                                 }
                                                                 panellist.push(list)
