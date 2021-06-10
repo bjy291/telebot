@@ -128,7 +128,7 @@ function inQuiry(userText,sumD){
 // }
 async function setSql(data){
         if(data){
-                sql="select numberData.* from telebot.number_dictionary join telebot.numberData using(Data_idx) where ("
+                sql="select numberData.* from Number_dictionary join numberData using(Data_idx) where ("
                 //sql="select * from number_dictionary where ("
                 data.map( (token,index) => {
                         console.log(token)
@@ -143,7 +143,7 @@ async function setSql(data){
 }
 async function setFAXSql(data ,str){
         if(data){
-                FAXsql = "select a.* from telebot.numberData a join (select Data_idx from telebot.number_dictionary where (group_title like '%"
+                FAXsql = "select a.* from numberData a join (select Data_idx from Number_dictionary where (group_title like '%"
                 FAXsql += str + "%')) fax using (Data_idx) where ("
                 data.map((token, index) => {
                         if(index==0) FAXsql += "num_group like '%" + token+ "%'"
@@ -203,6 +203,10 @@ async function extraction(userText){
                         //         }
                         // }
                         for(var i=0; i<data['morphed'].length; i=i+1){
+                                if(data['morphed'][i]['word'] == "민원" && data['morphed'][i+1]['word'] == "안내"){
+                                        data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
+                                        data['morphed'][i+1]['word'] = ''
+                                }
                                 // switch(data['morphed'][i]['word']){
                                 //         case '교무':
                                 //                 data['morphed'][i]['word'] = data['morphed'][i]['word'] + data['morphed'][i+1]['word']
