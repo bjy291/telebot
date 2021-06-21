@@ -1,7 +1,13 @@
+const { response } = require('express');
+const { request } = require('http');
+
 {//서버설정###################################서버설정#####################################서버설정
     var express=require('express');
     var bodyParser=require('body-parser')
     var app=express();
+    var fs = require('fs');
+    var url = require('url');
+    var http = require('http');
     // var session=require('express-session');
     // var mss=require('express-mysql-session')(session);
 
@@ -25,7 +31,8 @@
     app.use("/js", express.static(__dirname + '/js'));//js파일경로
     app.use(bodyParser.urlencoded({extended:false}));//post방식사용시 req.body로 값을 받아오기위해 사용
     app.use(bodyParser.json());//post방식사용시 req.body로 값을 받아오기위해 사용
-    app.use('/', require('./route/controller/chatController')); //로그인관련 라우팅
+    app.use('/telebot', require('./route/controller/chatController')); //로그인관련 라우팅
+
     app.listen(3030,()=>{ 
             console.log('Conneted 3030 port');
     });

@@ -17,13 +17,17 @@ exports.chat=async (req,res)=>{
         console.log("data : ", data)
 
         if(data.indexOf("FAX") >= 0){
-                result=await setFAXSql(data, "FAX")
+                result=await setFAXSql(data2, "FAX")
+                
         }else if(data.indexOf("팩스") >= 0){
-                result=await setFAXSql(data, "FAX")
+                result=await setFAXSql(data2, "FAX")
+                
         }else if(data.indexOf("fax") >= 0){
-                result=await setFAXSql(data, "FAX")
+                result=await setFAXSql(data2, "FAX")
+                
         }else if(data.indexOf("민원안내") >= 0){
-                result=await setFAXSql(data, "민원안내")
+                result=await setFAXSql(data2, "민원안내")
+                
         }else{
                 sql=await setSql(data2)
                 result=await getContent(sql,flag).then((result)=>{
