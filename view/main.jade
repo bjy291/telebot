@@ -120,6 +120,16 @@ html
                                                                 this.chatlist.push(extract)
                                                                 return
                                                         }
+                                                        if(data == "엑셀"){
+                                                                extract={
+                                                                        flag:1,
+                                                                        panel:false,
+                                                                        text:'엑셀을 업로드 합니다.'
+
+                                                                }
+                                                                this.chatlist.push(extract)
+                                                                return
+                                                        }
                                                         panellist=[]
                                                         //- for(key in data){
                                                         //-         //- list={indexNo:data[key].indexNo,
@@ -139,9 +149,9 @@ html
                                                                         job = " - " + data[i].num_job
                                                                 }
                                                                 if(data[i].num_number.length > 5){
-                                                                        content = "☎ 032-" + data[i].num_number + " <a class='calling' href='tel:010-5896-2240'> 전화걸기</a>"
+                                                                        content = "☎ 032-" + data[i].num_number + " <a class='calling' href='tel:032" + data[i].num_number+"'> 전화걸기</a>"
                                                                 }else if(data[i].num_number.length <= 4){
-                                                                        content = "☎ 032-870-" + data[i].num_number + " <a class='calling' href='tel:010-5896-2240'> 전화걸기</a>"
+                                                                        content = "☎ 032-870-" + data[i].num_number + " <a class='calling' href='tel:032-870 " +data[i].num_number+"'> 전화걸기</a>"
                                                                 }
 
                                                                 list={

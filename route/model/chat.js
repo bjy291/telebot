@@ -28,6 +28,9 @@ exports.chat=async (req,res)=>{
         }else if(data.indexOf("민원안내") >= 0){
                 result=await setFAXSql(data2, "민원안내")
                 
+        }else if(data.indexOf("엑셀") >= 0){
+                result=await setFAXSql(data2, "엑셀")
+                
         }else{
                 sql=await setSql(data2)
                 result=await getContent(sql,flag).then((result)=>{
