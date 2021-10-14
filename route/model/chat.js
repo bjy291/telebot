@@ -28,8 +28,8 @@ exports.chat=async (req,res)=>{
         }else if(data.indexOf("민원안내") >= 0){
                 result=await setFAXSql(data2, "민원안내")
                 
-        }else if(data.indexOf("엑셀") >= 0){
-                result=await setFAXSql(data2, "엑셀")
+        }else if(data.indexOf("CSV") >= 0){
+                result=await setFAXSql(data2, "CSV")
                 
         }else{
                 sql=await setSql(data2)
