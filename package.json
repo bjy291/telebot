@@ -16,6 +16,7 @@
     "jade": "^1.11.0",
     "java": "^0.12.1",
     "korean-text-analytics": "^0.0.7",
+    "multer": "^1.4.3",
     "mysql": "^2.18.1",
     "node-pre-gyp": "^0.17.0",
     "python": "^0.0.4",

@@ -32,6 +32,8 @@ const { request } = require('http');
     app.use(bodyParser.urlencoded({extended:false}));//post방식사용시 req.body로 값을 받아오기위해 사용
     app.use(bodyParser.json());//post방식사용시 req.body로 값을 받아오기위해 사용
     app.use('/', require('./route/controller/chatController')); //로그인관련 라우팅
+    //app.use(express.static('/csv'));
+    app.use('/csv', express.static('csv'));
 
     app.listen(3030,()=>{ 
             console.log('Conneted 3030 port');

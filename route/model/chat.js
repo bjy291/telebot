@@ -6,6 +6,11 @@ var promise=require('promise')
 exports.main=(req,res)=>{
         res.render('main')
 }
+
+exports.upload=(req, res) =>{
+        res.render('upload.jade');
+}
+
 exports.chat=async (req,res)=>{
         userText=req.body.userText
         if(userText.length<2){

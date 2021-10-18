@@ -57,6 +57,13 @@ html
                                                         v-text-field(label='입력하세요' single-line filled v-model="userText" v-on:keyup.enter="userInput")
                                                                 template(v-slot:append)
                                                                         v-btn.input-btn(depressed color="primary" v-on:click="userInput") 전송
+
+                                template
+                                        div
+                                                window-popup(v-model="open") 팝업창의 내용입니다 
+                                                button(@click="open = true") open 
+                                                {{ open }}
+
         script.
                 Vue.config.devtools = true 
                 app=new Vue({
@@ -121,13 +128,7 @@ html
                                                                 return
                                                         }
                                                         if(data == "CSV"){
-                                                                extract={
-                                                                        flag:1,
-                                                                        panel:false,
-                                                                        text:"http://localhost:3030/CSVUP"
-
-                                                                }
-                                                                this.chatlist.push(extract)
+                                                                window.open('/upload', 'child', 'width = 600, height = 300', true);
                                                                 return
                                                         }
                                                         panellist=[]
@@ -199,3 +200,4 @@ html
                                 }
                         },
                 })
+               
