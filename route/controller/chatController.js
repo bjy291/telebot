@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const chat = require('../model/chat')
 const multer = require("multer")
+
 var db=require('../../db')
 router.get('/', chat.main)
 router.post('/chat',chat.chat)
@@ -40,6 +41,9 @@ router.post('/upload', upload.single("csvfile"), function(req, res, next){
             console.log(result)
         }
     })
+
+
+
 
     res.json(result);
 });
