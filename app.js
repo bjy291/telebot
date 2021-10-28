@@ -35,8 +35,8 @@ const { request } = require('http');
     //app.use(express.static('/csv'));
     app.use('/csv', express.static('csv'));
 
-    app.listen(3030,()=>{ 
-            console.log('Conneted 3030 port');
+    app.listen(3031,()=>{ 
+            console.log('Conneted 3031 port');
     });
 }
 Date.prototype.format = function(f) { //날짜형식 함수
