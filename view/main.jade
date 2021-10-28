@@ -58,12 +58,6 @@ html
                                                                 template(v-slot:append)
                                                                         v-btn.input-btn(depressed color="primary" v-on:click="userInput") 전송
 
-                                template
-                                        div
-                                                window-popup(v-model="open") 팝업창의 내용입니다 
-                                                button(@click="open = true") open 
-                                                {{ open }}
-
         script.
                 Vue.config.devtools = true 
                 app=new Vue({

@@ -159,7 +159,14 @@ def SQLINSERT(Data):
     #title = Data['그룹'][0]
     #chapter_no = 1
     #group_no = 1
-    
+
+    #NumberData 삽입.
+    for group, name, number, sub_num, job, bulid, position in zip(Data['그룹'], Data['성명'], Data['번호'], Data['서브번호'], Data['업무'], Data['위치'], Data['직책']):
+        number = str(number)
+        sub_num = str(sub_num)
+        sql = 'insert into numberData(num_group, num_number, num_sub_num, num_name, num_job, num_location, num_position) values(%s, %s, %s, %s, %s, %s, %s)'
+        cur.execute(sql,(group, number, sub_num, name, job, bulid, position))
+
     #Chapter 이름 
     Data_idx = 258 #numberData와 dict index num 
     for name, group in zip(Data['성명'], Data['그룹']):
@@ -169,9 +176,10 @@ def SQLINSERT(Data):
         #    chapter_no = chapter_no + 1
         #    group_no = 1
         
-        sql = 'insert into Number_dictionary(chapter_title, group_title, Data_idx) values(%s, %s, %s)'
-        cur.execute(sql,(name, group , Data_idx))
-        Data_idx = Data_idx + 1
+        sql = 'insert into Number_dictionary(chapter_title, group_title, Data_idx) values(%s, %s, (select Data_idx from numberData where num_name = %s and num_group = %s limit 1))'
+        cur.execute(sql,(name, group , name, group))
+
+        #Data_idx = Data_idx + 1
     
     #Chapter 그룹
     Data_idx = 258
@@ -182,16 +190,10 @@ def SQLINSERT(Data):
         #    chapter_no = chapter_no + 1
         #    group_no = 1
         
-        sql = 'insert into dictionary_backup(chapter_title, group_title, Data_idx) values(%s, %s, %s)'
-        cur.execute(sql,(group, name, Data_idx))
-        Data_idx = Data_idx + 1
-    
-    #NumberData 삽입.
-    #for group, name, number, sub_num, job, bulid, position in zip(Data['그룹'], Data['성명'], Data['번호'], Data['서브번호'], Data['업무'], Data['위치'], Data['직책']):
-    #    number = str(number)
-    #    sub_num = str(sub_num)
-    #    sql = 'insert into numberData(num_group, num_number, num_sub_num, num_name, num_job, num_location, num_position) values(%s, %s, %s, %s, %s, %s, %s)'
-    #    cur.execute(sql,(group, number, sub_num, name, job, bulid, position))
+        sql = 'insert into Number_dictionary(chapter_title, group_title, Data_idx) values(%s, %s, (select Data_idx from numberData where num_group = %s and num_name = %s limit 1))'
+        cur.execute(sql,(group, name, group, name))
+
+        #Data_idx = Data_idx + 1
 
 Data = pd.read_excel(str(sys.argv[1]),  skiprows=2, index_col=False, sheet_name=str(sys.argv[2]), encoding = 'UTF-8', engine = 'openpyxl')
 Data = cut(Data)
@@ -219,4 +221,4 @@ finally:
 #excel_writer.save()
 
 
-print(str(sys.argv[2]) 등록완료.)
+print(str(sys.argv[2]), '등록완료.')
